@@ -75,14 +75,34 @@ export function buildCommand(command) {
 export const COMMAND_DEVICE_INFO = buildCommand(CMD_DEVICE_INFO);
 export const COMMAND_CELL_INFO = buildCommand(CMD_CELL_INFO);
 
+// A cell-info frame the BMS actually sent: preamble, type 0x02, and a matching checksum.
+// Notifications are shorter than this, so the check runs on a reassembled frame.
+export function isCellInfoFrame(bytes) {
+  if (!bytes || bytes.length < FRAME_LENGTH) return false;
+  for (let i = 0; i < HEADER.length; i += 1) {
+    if (bytes[i] !== HEADER[i]) return false;
+  }
+  if (bytes[4] !== 0x02) return false;
+  return checksum(bytes, FRAME_LENGTH - 1) === bytes[FRAME_LENGTH - 1];
+}
+
 export const PROFILE = {
   filters: [{ namePrefix: 'JK-' }, { namePrefix: 'JK_' }],
   service: 0xffe0,
   notify: 0xffe1,
   write: 0xffe1,
+  // The BMS accepts the write but never sends an ATT response.
+  writeWithoutResponse: true,
+  framer: FRAMER,
   onReady: async (link) => {
     await link.write(COMMAND_DEVICE_INFO);
     await link.write(COMMAND_CELL_INFO);
+  },
+  // After 0x96 the BMS streams on its own. Resend only while no cell-info frame has arrived.
+  silence: {
+    everyMs: CELL_INFO_RETRY_MS,
+    seen: isCellInfoFrame,
+    run: (link) => link.write(COMMAND_CELL_INFO)
   }
 };
 

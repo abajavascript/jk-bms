@@ -10,7 +10,7 @@ The page is HTML, CSS, and JavaScript ES modules with no build step, served by G
 
 JK-BMS units advertise names starting with `JK-` or `JK_` and use service `0xFFE0` with one characteristic, `0xFFE1`, for both notify and write. Unlike the Atorch meter, the BMS sends nothing until asked. A request is 20 bytes: `AA 55 90 EB`, the command, a length byte, a 4-byte little-endian value, zeros, and a last byte that is the byte sum of bytes 0..18.
 
-On every connect and reconnect the profile's `onReady` writes `0x97` (device info) and then `0x96` (cell info). After `0x96` the BMS streams cell info frames by itself, and it also sends the settings frame. If no cell info frame has arrived, `0x96` is written again every few seconds. This is what the esphome component does in `update()`, and it covers a BMS that ignored the first request while it was waking up.
+On every connect and reconnect the profile's `onReady` writes `0x97` (device info) and then `0x96` (cell info), using write-without-response. The BMS does not send an ATT write response, so a write-with-response would wait until the step timed out. After `0x96` the BMS streams cell info frames by itself, and it also sends the settings frame. If no checksummed cell-info frame has arrived, `0x96` is written again every few seconds. This is what the esphome component does in `update()`, and it covers a BMS that ignored the first request while it was waking up.
 
 The Python prototype also wrote `0x90` and `0x9A`. Neither is needed: the BMS answers `0x97` and `0x96` alone, and `0x9A` is not a documented read command. The page writes nothing else, so it cannot change a setting by accident.
 
@@ -18,7 +18,7 @@ Each GATT step gives up after 20 seconds. A dropped link retries after 1, 2, 4, 
 
 ## 3. Frames are reassembled and checksummed
 
-A 300-byte frame arrives in several notifications (for example 128 + 128 + 44 bytes, depending on the MTU). `createFramer` starts a new buffer at each `55 AA EB 90` preamble, the same way the esphome `assemble()` does. When the buffer reaches 300 bytes, the byte sum of bytes 0..298 is compared with byte 299. Some firmware sends 320 bytes; the checksum still sits at byte 299, and the extra bytes are ignored. A frame that fails the checksum is counted and skipped; the link stays up. The framer is reset when the link becomes `connected`, so a half frame from before a drop is never joined to a new one.
+A 300-byte frame arrives in several notifications (for example 128 + 128 + 44 bytes, depending on the MTU). The profile's framer starts a new buffer at each `55 AA EB 90` preamble, the same way the esphome `assemble()` does, and the page is given only complete 300-byte frames. When a frame is decoded, the byte sum of bytes 0..298 is compared with byte 299. Some firmware sends 320 bytes; the checksum still sits at byte 299, and the extra bytes are ignored. A frame that fails the checksum is counted and skipped; the link stays up. The transport creates a new framer on every connection, before the init writes, so a half frame from before a drop is never joined to a new one.
 
 Byte 4 is the frame type: `0x01` settings, `0x02` cell info, `0x03` device info, `0x05` logbook. Byte 5 is a frame counter.
 

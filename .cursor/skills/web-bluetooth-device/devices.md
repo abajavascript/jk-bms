@@ -43,7 +43,7 @@ Sources: the jk-bms project (`js/protocol.js`), the esphome component by syssi, 
 ### Link
 
 - Names start with `JK-` or `JK_`. Service `0xFFE0`, one characteristic `0xFFE1` for both notify and write.
-- The BMS sends nothing until asked. In `onReady`, write `0x97` (device info), then `0x96` (cell info). After `0x96` it streams cell info frames and also sends the settings frame. If no cell info frame has arrived, write `0x96` again every few seconds (esphome `update()`).
+- The BMS sends nothing until asked. In `onReady`, write `0x97` (device info), then `0x96` (cell info). Use write-without-response: the BMS does not send an ATT write response. After `0x96` it streams cell info frames and also sends the settings frame. If no checksummed cell-info frame has arrived, write `0x96` again every few seconds (esphome `update()`).
 - `0x90` and `0x9A`, used by an early prototype, are not needed. `0xA1` requests the logbook.
 - Request, 20 bytes: `AA 55 90 EB`, command, length, 4-byte value (little-endian), zeros, then byte 19 = byte sum of bytes 0..18 (& 0xFF). For a read request, length and value are 0.
   - `0x97`: `aa 55 90 eb 97 00 00 00 00 00 00 00 00 00 00 00 00 00 00 11`

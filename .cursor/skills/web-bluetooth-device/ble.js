@@ -9,6 +9,9 @@ export function createBle({ profile, onPacket, onLink }) {
   let linking = false;
   let reconnectTimer = null;
   let pollTimer = null;
+  let silenceTimer = null;
+  let silenceSeen = false;
+  let framer = null;
   let attempt = 0;
   let wakeLock = null;
   let writes = Promise.resolve();
@@ -78,6 +81,8 @@ export function createBle({ profile, onPacket, onLink }) {
     try {
       const previous = notifyCharacteristic;
       detach();
+      // A new framer, so a chunk left over from the dropped link is not prefixed onto the next frame.
+      framer = profile.framer ? createFramer(profile.framer) : null;
       if (previous) {
         try { await previous.stopNotifications(); } catch { /* already stopped */ }
       }
@@ -94,6 +99,7 @@ export function createBle({ profile, onPacket, onLink }) {
       await step('start notifications', () => notify.startNotifications());
       if (profile.onReady) await step('device init', () => profile.onReady(api));
       startPolling();
+      startSilenceWatch();
       await requestWakeLock();
     } catch (error) {
       detach();
@@ -129,8 +135,14 @@ export function createBle({ profile, onPacket, onLink }) {
     const job = writes.then(async () => {
       if (!writeCharacteristic) throw new Error('Not connected, or this device has no write characteristic.');
       const data = bytes instanceof Uint8Array ? bytes : Uint8Array.from(bytes);
-      if (writeCharacteristic.properties.write) await writeCharacteristic.writeValueWithResponse(data);
-      else await writeCharacteristic.writeValueWithoutResponse(data);
+      // Some devices accept the write property but never send an ATT response, so the profile can force no-response.
+      if (profile.writeWithoutResponse && writeCharacteristic.properties.writeWithoutResponse) {
+        await writeCharacteristic.writeValueWithoutResponse(data);
+      } else if (writeCharacteristic.properties.write) {
+        await writeCharacteristic.writeValueWithResponse(data);
+      } else {
+        await writeCharacteristic.writeValueWithoutResponse(data);
+      }
     });
     writes = job.catch(() => {});
     return job;
@@ -149,10 +161,32 @@ export function createBle({ profile, onPacket, onLink }) {
     pollTimer = null;
   }
 
+  function startSilenceWatch() {
+    stopSilenceWatch();
+    // A matching frame during onReady already set silenceSeen, so no timer is armed.
+    if (!profile.silence || silenceSeen) return;
+    silenceTimer = setInterval(() => {
+      profile.silence.run(api).catch((error) => console.warn('Silence retry failed', error));
+    }, profile.silence.everyMs);
+  }
+
+  function stopSilenceWatch() {
+    clearInterval(silenceTimer);
+    silenceTimer = null;
+  }
+
   function handleNotification(event) {
     const value = event.target.value;
     // The DataView buffer can be reused by the browser; copy before keeping bytes.
-    onPacket(new Uint8Array(value.buffer.slice(value.byteOffset, value.byteOffset + value.byteLength)));
+    const bytes = new Uint8Array(value.buffer.slice(value.byteOffset, value.byteOffset + value.byteLength));
+    const frames = framer ? framer.push(bytes) : [bytes];
+    for (const frame of frames) {
+      if (!silenceSeen && profile.silence?.seen?.(frame)) {
+        silenceSeen = true;
+        stopSilenceWatch();
+      }
+      onPacket(frame);
+    }
   }
 
   function handleDisconnected() {
@@ -194,6 +228,9 @@ export function createBle({ profile, onPacket, onLink }) {
 
   function detach() {
     stopPolling();
+    stopSilenceWatch();
+    silenceSeen = false;
+    framer = null;
     writeCharacteristic = null;
     if (!notifyCharacteristic) return;
     notifyCharacteristic.removeEventListener('characteristicvaluechanged', handleNotification);

@@ -33,7 +33,7 @@ One person near the battery, with Chrome or Edge on a computer, or Chrome on And
 
 ## Requirements
 
-1. **Connect** opens the Bluetooth chooser filtered to names starting with `JK-` or `JK_`. After the link is up, the page writes the device info request (`0x97`) and then the cell info request (`0x96`). If no cell info frame has arrived, `0x96` is sent again every few seconds until one does.
+1. **Connect** opens the Bluetooth chooser filtered to names starting with `JK-` or `JK_`. After the link is up, the page writes the device info request (`0x97`) and then the cell info request (`0x96`), without waiting for a write response. If no checksummed cell info frame has arrived, `0x96` is sent again every few seconds until one does.
 2. A frame starts at each `55 AA EB 90` preamble. Once 300 bytes are collected, the byte sum of bytes 0..298 must equal byte 299. A frame that fails is counted as an error, shown in Packet details, and skipped; the link stays up. Bytes after 300 (frames can be 320 bytes) are ignored.
 3. The Device section shows model, hardware version, software version, serial number, manufacturing date, power-on count, and BMS runtime.
 4. Live readings show pack voltage (V), current (A, negative while discharging), power (W, voltage × current), SOC (%), remaining and full-charge capacity (Ah), cycle count, cycle capacity (Ah), SOH (%), cell delta (V), lowest and highest cell (V and number), mosfet temperature and T1..T5 (°C), balancer current and action, and the charge, discharge, precharge, and heating states.

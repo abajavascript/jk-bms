@@ -11,8 +11,8 @@ The transport is generic. Each device adds one protocol module. Copy [ble.js](bl
 
 | File | Owns | Never does |
 |---|---|---|
-| `js/ble.js` | requestDevice, GATT steps, reconnect, wake lock, writes, polling | decode bytes, touch the DOM |
-| `js/protocol-<device>.js` | UUIDs, name filter, the profile, decoder, command encoders, sample frames | keep state other than a framer, touch the DOM |
+| `js/ble.js` | requestDevice, GATT steps, reconnect, wake lock, writes, polling, frame reassembly | decode bytes, touch the DOM |
+| `js/protocol-<device>.js` | UUIDs, name filter, the profile, decoder, command encoders, sample frames | keep state, touch the DOM |
 | `js/app.js` | wiring: bytes to decoder to render, chart, and logger | parse bytes itself |
 
 ## Device profile
@@ -23,10 +23,17 @@ export const PROFILE = {
   service: 0xffe0,
   notify: 0xffe1,
   write: 0xffe1,                      // omit for notify-only devices
+  writeWithoutResponse: true,         // omit when the device answers writes
+  framer: { header, frameLength },    // omit when each notification is one frame
   onReady: async (link) => {          // runs after every connect and reconnect
     await link.write(COMMAND_DEVICE_INFO);
   },
-  poll: { everyMs: 1000, run: (link) => link.write(COMMAND_READ) } // only if the device needs a request per reading
+  poll: { everyMs: 1000, run: (link) => link.write(COMMAND_READ) }, // a request per reading
+  silence: {                          // repeat until seen() is true, then stop
+    everyMs: 5000,
+    seen: (frame) => false,
+    run: (link) => link.write(COMMAND_READ)
+  }
 };
 
 const ble = createBle({ profile: PROFILE, onPacket, onLink });
@@ -46,13 +53,14 @@ const ble = createBle({ profile: PROFILE, onPacket, onLink });
 
 ## Writes
 
-- All writes go through `link.write(bytes)`, which runs them one at a time. It uses write-with-response when the characteristic supports it.
+- All writes go through `link.write(bytes)`, which runs them one at a time. It uses write-with-response when the characteristic supports it. Set `writeWithoutResponse: true` when the device never sends a write response.
 - Monitoring apps write only read requests and init commands. Commands that change settings, relays, or loads need explicit scope in the product brief and a confirmation with `ask()` from `browser-dialogs`.
 
 ## Frames
 
-- If a frame can span several notifications (JK BMS, any frame larger than about 20 bytes on a small MTU), feed every notification through `createFramer({ header, frameLength })` and decode only complete frames. Call `framer.reset()` when the link state becomes `connected`.
-- `frameLength(buffer)` returns the full frame length once enough bytes are present to know it, otherwise `null`.
+- Set `profile.framer` to `{ header, frameLength }` when a frame can span several notifications (JK BMS, any frame larger than about 20 bytes on a small MTU). `onPacket` then receives complete frames only. The transport creates a new framer on every connection, before `onReady`. `frameLength(buffer)` returns the full frame length once enough bytes are present to know it, otherwise `null`.
+- `createFramer({ header, frameLength })` is exported for the same reassembly outside the transport.
+- `profile.silence` repeats `run` every `everyMs` after `onReady` until `seen(frame)` returns true. `frame` is the same value `onPacket` receives. A match while `onReady` is still running counts, so the timer is not started.
 
 ## Decoder rules
 
