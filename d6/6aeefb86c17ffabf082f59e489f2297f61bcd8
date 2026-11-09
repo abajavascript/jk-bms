@@ -1,0 +1,44 @@
+.cursor/skills/web-bluetooth-device/SKILL.md
+  s_b6c9bdb075e791::t_22fe991aff8477 56
+  s_b6c9bdb075e791::t_10e6cfd6462de6 61-63
+  s_b6c9bdb075e791::t_cc6c638cbabc3c 15
+  s_b6c9bdb075e791::t_5adc60f4117424 14
+  s_b6c9bdb075e791::t_d13d225a62c653 26-27,31-36
+.cursor/skills/web-bluetooth-device/devices.md
+  s_b6c9bdb075e791::t_aafbc8168fabff 46
+js/ble.js
+  s_b6c9bdb075e791::t_6c519941e1f533 1-340
+doc/prd.md
+  s_b6c9bdb075e791::t_22877be408007f 36
+js/protocol.js
+  s_b6c9bdb075e791::t_ff865822f040b9 78-88,94-96,100-105
+doc/adr.md
+  s_b6c9bdb075e791::t_6c1eda9000618f 13
+  s_b6c9bdb075e791::t_7535ff79ff1411 21
+.cursor/skills/web-bluetooth-device/ble.js
+  s_108c5b344f6205::t_c917d75d3fb7d1 12-14,84-85,102,138-145,164-177,181-189,231-233
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d66aeefb86c17ffabf082f59e489f2297f61bcd8",
+  "prompts": {},
+  "sessions": {
+    "s_108c5b344f6205": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "19ff8ae2-84da-49e7-9ebf-e15412bc7e7a",
+        "model": "auto-smart"
+      },
+      "human_author": "ABA JavaScript <abajavascript@gmail.com>"
+    },
+    "s_b6c9bdb075e791": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "090596e6-ccb1-4a73-b875-9c0684f656bd",
+        "model": "auto-smart"
+      },
+      "human_author": "ABA JavaScript <abajavascript@gmail.com>"
+    }
+  }
+}
