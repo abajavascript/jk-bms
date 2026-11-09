@@ -1,0 +1,28 @@
+js/dialogs.js
+  s_b4c056ec96e9f0::t_7db6b02df7948b 1-26
+.gitignore
+  s_b4c056ec96e9f0::t_8c3d10b0cc108d 9
+  s_b4c056ec96e9f0::t_56d142a8e17bc9 6-8
+js/app.js
+  s_b4c056ec96e9f0::t_152f78e8c06f3f 340
+  s_b4c056ec96e9f0::t_d9c18583a14003 1-293,295-304,307-339,341-448
+  s_b4c056ec96e9f0::t_525741556a1428 294,305-306
+favicon.svg
+  s_b4c056ec96e9f0::t_505d766346bc09 1-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4582e2d74fd7b7b462f27b9c9588e101c0b3e4df",
+  "prompts": {},
+  "sessions": {
+    "s_b4c056ec96e9f0": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "11b18c44-f696-46c2-8578-cdf9eef77d74",
+        "model": "auto-smart"
+      },
+      "human_author": "ABA JavaScript <abajavascript@gmail.com>"
+    }
+  }
+}
