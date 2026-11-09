@@ -1,0 +1,33 @@
+.cursor/skills/web-bluetooth-device/devices.md
+  s_7016f0e6629ada::t_9dcbdfe94f63e7 145,148
+  s_7016f0e6629ada::t_a5d909793cd98e 49-50
+  s_7016f0e6629ada::t_df4bfca4ec6121 156
+  s_7016f0e6629ada::t_df4b2f88be6764 152
+  s_7016f0e6629ada::t_ae0a4d487c4505 39-48,51-144,146-147,149-151,153-155
+doc/prd.md
+  s_7016f0e6629ada::t_77c57c03f7f7db 1-72
+doc/adr.md
+  s_7016f0e6629ada::t_59ae4f706ab622 1-20,22-35,37,39-48,50-64
+  s_7016f0e6629ada::t_0ed2e176d9d436 49
+  s_7016f0e6629ada::t_6367cad9462191 21
+  s_7016f0e6629ada::t_6a176ea200e2ce 36
+  s_7016f0e6629ada::t_6195b909872a39 38
+README.md
+  s_7016f0e6629ada::t_48bf34effc27bc 1-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a26797b3e466266bf7a88a94adb0a6ceae4ea70b",
+  "prompts": {},
+  "sessions": {
+    "s_7016f0e6629ada": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "bb85c6dd-c54e-43fa-b2e8-dbc774e2ff6f",
+        "model": "auto-smart"
+      },
+      "human_author": "ABA JavaScript <abajavascript@gmail.com>"
+    }
+  }
+}
