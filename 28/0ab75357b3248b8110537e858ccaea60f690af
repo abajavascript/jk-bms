@@ -1,0 +1,39 @@
+.cursor/skills/browser-dialogs/SKILL.md
+  s_108c5b344f6205::t_d4c3d63471226a 1-82
+.cursor/skills/browser-file-logging/SKILL.md
+  s_108c5b344f6205::t_85f11091c0e951 1-85
+.cursor/skills/browser-file-logging/logger.js
+  s_108c5b344f6205::t_ca139d8480580b 1-254
+.cursor/skills/firebase-auth-pages/SKILL.md
+  s_108c5b344f6205::t_35d6a176a63053 1-83
+.cursor/skills/github-pages-app/SKILL.md
+  s_108c5b344f6205::t_96f49098350a46 1-121
+.cursor/skills/web-bluetooth-device/SKILL.md
+  s_108c5b344f6205::t_20c1de2473d8d5 1-76
+.cursor/skills/web-bluetooth-device/ble.js
+  s_108c5b344f6205::t_fe44adae30c8f0 1-303
+.cursor/skills/web-bluetooth-device/devices.md
+  s_108c5b344f6205::t_6e5ad04dc8c6ee 1-46
+.cursor/skills/web-ui-layout/SKILL.md
+  s_108c5b344f6205::t_161a7bd01f976d 1-98
+.cursor/skills/web-ui-layout/base.css
+  s_108c5b344f6205::t_93108be64f534a 1-182
+.gitignore
+  s_108c5b344f6205::t_062b0b772bb58e 1-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "280ab75357b3248b8110537e858ccaea60f690af",
+  "prompts": {},
+  "sessions": {
+    "s_108c5b344f6205": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "19ff8ae2-84da-49e7-9ebf-e15412bc7e7a",
+        "model": "auto-smart"
+      },
+      "human_author": "ABA JavaScript <abajavascript@gmail.com>"
+    }
+  }
+}
