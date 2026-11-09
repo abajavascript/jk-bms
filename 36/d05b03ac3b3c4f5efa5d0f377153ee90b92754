@@ -1,0 +1,21 @@
+js/chart.js
+  s_1c6e971085ad05::t_f31763f83b87c1 1-418
+js/log.js
+  s_1c6e971085ad05::t_093b17c6b2d14c 1-552
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "36d05b03ac3b3c4f5efa5d0f377153ee90b92754",
+  "prompts": {},
+  "sessions": {
+    "s_1c6e971085ad05": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2c9eb1cc-4674-4f7c-b1b3-6cb451888b79",
+        "model": "auto-smart"
+      },
+      "human_author": "ABA JavaScript <abajavascript@gmail.com>"
+    }
+  }
+}
