@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111827">
+<title>JK-BMS Web Monitor</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.min.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<header class="page-header">
+  <h1>JK-BMS Web Monitor</h1>
+  <p class="muted">Watch a JK-BMS over Bluetooth: live pack readings, every cell, and a log file. The page only reads data.</p>
+</header>
+
+<section class="panel" aria-label="Connection">
+  <div class="actions">
+    <button id="connect" type="button">Connect</button>
+    <button id="disconnect" type="button" disabled>Disconnect</button>
+  </div>
+  <p class="stats">
+    <span>Status: <strong id="status" class="status">Disconnected</strong></span>
+    <span>Packets: <strong id="count">0</strong></span>
+    <span>Errors: <strong id="errorCount">0</strong></span>
+  </p>
+  <p id="error" class="error" role="alert"></p>
+  <h2>Link log</h2>
+  <ol id="linkLog" class="link-log" aria-live="polite"><li class="muted">No link events yet.</li></ol>
+  <p id="connectionNote" class="note">Keep this tab in the foreground. On Android, turn Location on or the Bluetooth list can stay empty. iPhone and iPad cannot connect. Close the JK app first; the BMS accepts one connection. A dropped link reconnects on its own. Disconnect stops reconnecting. Closing the page commits the last finished row and disconnects.</p>
+</section>
+
+<section class="panel" aria-label="Device">
+  <h2>Device</h2>
+  <div class="metrics device">
+    <article class="metric wide">
+      <div class="name">Model</div>
+      <div class="value" id="device-model">—</div>
+    </article>
+    <article class="metric">
+      <div class="name">Hardware version</div>
+      <div class="value" id="device-hardware">—</div>
+    </article>
+    <article class="metric">
+      <div class="name">Software version</div>
+      <div class="value" id="device-software">—</div>
+    </article>
+    <article class="metric wide">
+      <div class="name">Serial number</div>
+      <div class="value" id="device-serial">—</div>
+    </article>
+    <article class="metric">
+      <div class="name">Manufacturing date</div>
+      <div class="value" id="device-manufactured">—</div>
+    </article>
+    <article class="metric">
+      <div class="name">Power-on count</div>
+      <div class="value" id="device-powerOns">—</div>
+    </article>
+    <article class="metric">
+      <div class="name">Runtime</div>
+      <div class="value" id="device-runtime">—</div>
+    </article>
+    <article class="metric">
+      <div class="name">Layout</div>
+      <div class="value" id="device-layout">—</div>
+    </article>
+  </div>
+</section>
+
+<section class="metrics" aria-label="Live readings">
+  <article class="metric">
+    <div class="name">Voltage</div>
+    <div class="value" id="metric-voltage">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">Current</div>
+    <div class="value" id="metric-current">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">Power</div>
+    <div class="value" id="metric-power">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">SOC</div>
+    <div class="value" id="metric-soc">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">Remaining</div>
+    <div class="value" id="metric-remaining">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">Full capacity</div>
+    <div class="value" id="metric-fullCapacity">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">Cycles</div>
+    <div class="value" id="metric-cycles">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">Cycle capacity</div>
+    <div class="value" id="metric-cycleCapacity">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">SOH</div>
+    <div class="value" id="metric-soh">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">Cell delta</div>
+    <div class="value" id="metric-delta">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">Lowest cell</div>
+    <div class="value" id="metric-minCell">—</div>
+    <div class="detail" id="metric-minCellIndex">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">Highest cell</div>
+    <div class="value" id="metric-maxCell">—</div>
+    <div class="detail" id="metric-maxCellIndex">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">MOS temperature</div>
+    <div class="value" id="metric-mosfetTemperature">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">T1</div>
+    <div class="value" id="metric-t1">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">T2</div>
+    <div class="value" id="metric-t2">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">T3</div>
+    <div class="value" id="metric-t3">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">T4</div>
+    <div class="value" id="metric-t4">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">T5</div>
+    <div class="value" id="metric-t5">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">Balance current</div>
+    <div class="value" id="metric-balanceCurrent">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">Balance action</div>
+    <div class="value" id="metric-balanceAction">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">Charge MOSFET</div>
+    <div class="value" id="metric-chargeMosfet">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">Discharge MOSFET</div>
+    <div class="value" id="metric-dischargeMosfet">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">Precharge</div>
+    <div class="value" id="metric-precharge">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">Heating</div>
+    <div class="value" id="metric-heating">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">Battery</div>
+    <div class="value" id="metric-batteryType">—</div>
+    <div class="detail" id="metric-chargeStatus">—</div>
+  </article>
+  <article class="metric">
+    <div class="name">Errors</div>
+    <div class="value" id="metric-errors">—</div>
+  </article>
+</section>
+
+<section class="panel" aria-label="Cells">
+  <h2>Cells</h2>
+  <p id="cellSummary" class="note">Waiting for cell data…</p>
+  <p class="note">Voltage and wire resistance for each cell. <span class="swatch low">Lowest</span> and <span class="swatch high">highest</span> are highlighted.</p>
+  <div id="cells" class="cells"></div>
+  <template id="cellTemplate">
+    <article class="cell">
+      <div class="name"></div>
+      <div class="value">—</div>
+      <div class="detail">—</div>
+    </article>
+  </template>
+</section>
+
+<section class="panel" aria-label="Chart">
+  <div class="chips" id="chips">
+    <button type="button" data-series="voltage" aria-pressed="true">Voltage</button>
+    <button type="button" data-series="current" aria-pressed="true">Current</button>
+    <button type="button" data-series="power" aria-pressed="true">Power</button>
+    <button type="button" data-series="soc" aria-pressed="true">SOC</button>
+    <button type="button" data-series="deltaVoltage" aria-pressed="false">Cell delta</button>
+    <button type="button" data-series="mosfetTemperature" aria-pressed="false">MOS temperature</button>
+    <button type="button" data-series="t1" aria-pressed="false">T1</button>
+    <button type="button" data-series="t2" aria-pressed="false">T2</button>
+    <button type="button" data-series="t3" aria-pressed="false">T3</button>
+    <button type="button" data-series="t4" aria-pressed="false">T4</button>
+    <button type="button" data-series="t5" aria-pressed="false">T5</button>
+  </div>
+  <div class="chips" id="cellChips" aria-label="Cell voltages"></div>
+  <p class="note">Each series has its own scale. A gap longer than 3 seconds breaks the line. Hover a point for the value, the elapsed time, and the clock time.</p>
+  <div id="chart" class="chart" aria-label="Selected readings over time">
+    <p class="chart-empty">Waiting for data</p>
+  </div>
+</section>
+
+<section class="panel" aria-label="Log file">
+  <div class="actions log-bar">
+    <button id="startLog" type="button">Start logging</button>
+    <button id="stopLog" type="button" disabled>Stop logging</button>
+    <label class="store" for="logMode">Store
+      <select id="logMode">
+        <option value="0">Every reading</option>
+        <option value="5">Every 5 sec</option>
+        <option value="10">Every 10 sec</option>
+        <option value="30">Every 30 sec</option>
+        <option value="60">Every 1 min</option>
+        <option value="300">Every 5 min</option>
+        <option value="600">Every 10 min</option>
+      </select>
+    </label>
+  </div>
+  <p>File: <strong id="fileName">None</strong> · <strong id="logState">No file</strong> · Rows written: <strong id="rows">0</strong></p>
+  <p class="note">Start logging records into a file you choose. New file creates one when you enter a name. The file dialog defaults to tab-separated (.tsv). A name ending in .jsonl is JSON lines and starts with {"log":"jk-bms","version":1}; any other name is tab-separated. Existing file keeps its contents: an empty file starts a new log, and a file that already has this log's header for the same cell count can be appended or overridden. Stop logging ends the recording. Each finished row is saved before the next one. A dropped link reconnects and keeps using the same file. A reload forgets the chosen file; start again and pick the same file to append.</p>
+</section>
+
+<details class="panel">
+  <summary>Packet details</summary>
+  <div class="actions">
+    <button id="demo" type="button" class="secondary">Decode sample packet</button>
+  </div>
+  <p class="note">Latest frame of each type, in hex. The checksum passes when the byte sum of bytes 0..298 equals byte 299. Undecoded lists the bytes the decoder does not use. A failed checksum is counted under Errors and shown below; that frame is not applied.</p>
+
+  <section class="packet" aria-label="Settings frame">
+    <h2>Settings <span class="muted">0x01</span></h2>
+    <p class="packet-meta">Checksum: <strong id="crc-settings" class="crc">—</strong> · Counter: <strong id="counter-settings">—</strong></p>
+    <p class="packet-label">Raw frame</p>
+    <pre id="raw-settings">Waiting for data…</pre>
+    <p class="packet-label">Undecoded bytes</p>
+    <pre id="undecoded-settings">Waiting for data…</pre>
+  </section>
+
+  <section class="packet" aria-label="Cell info frame">
+    <h2>Cell info <span class="muted">0x02</span></h2>
+    <p class="packet-meta">Checksum: <strong id="crc-cell" class="crc">—</strong> · Counter: <strong id="counter-cell">—</strong></p>
+    <p class="packet-label">Raw frame</p>
+    <pre id="raw-cell">Waiting for data…</pre>
+    <p class="packet-label">Undecoded bytes</p>
+    <pre id="undecoded-cell">Waiting for data…</pre>
+  </section>
+
+  <section class="packet" aria-label="Device info frame">
+    <h2>Device info <span class="muted">0x03</span></h2>
+    <p class="packet-meta">Checksum: <strong id="crc-device" class="crc">—</strong> · Counter: <strong id="counter-device">—</strong></p>
+    <p class="packet-label">Raw frame</p>
+    <pre id="raw-device">Waiting for data…</pre>
+    <p class="packet-label">Undecoded bytes</p>
+    <pre id="undecoded-device">Waiting for data…</pre>
+  </section>
+
+  <section class="packet" aria-label="Logbook frame">
+    <h2>Logbook <span class="muted">0x05</span></h2>
+    <p class="note">Shown as raw hex. The logbook is not decoded.</p>
+    <p class="packet-meta">Checksum: <strong id="crc-logbook" class="crc">—</strong> · Counter: <strong id="counter-logbook">—</strong></p>
+    <p class="packet-label">Raw frame</p>
+    <pre id="raw-logbook">Waiting for data…</pre>
+    <p class="packet-label">Undecoded bytes</p>
+    <pre id="undecoded-logbook">Waiting for data…</pre>
+  </section>
+
+  <section class="packet" aria-label="Checksum failure">
+    <h2>Last checksum failure</h2>
+    <pre id="raw-failure">None</pre>
+  </section>
+</details>
+
+<dialog id="logKind" aria-labelledby="logKindText">
+  <p id="logKindText" data-message>New file creates a log when you enter a name. Existing file can be appended or overridden.</p>
+  <div class="actions">
+    <button id="logKindNew" type="button" data-choice="new">New file</button>
+    <button id="logKindExisting" type="button" data-choice="existing">Existing file</button>
+    <button id="logKindCancel" type="button" data-choice="" class="secondary">Cancel</button>
+  </div>
+</dialog>
+
+<dialog id="fileChoice" aria-labelledby="fileChoiceText">
+  <p id="fileChoiceText" data-message>Append new rows to this log, or override the file?</p>
+  <div class="actions">
+    <button id="fileAppend" type="button" data-choice="append">Append</button>
+    <button id="fileOverride" type="button" data-choice="override">Override</button>
+    <button id="fileCancel" type="button" data-choice="" class="secondary">Cancel</button>
+  </div>
+</dialog>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
