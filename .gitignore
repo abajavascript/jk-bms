@@ -4,3 +4,6 @@ desktop.ini
 *.crswap
 *.tsv
 *.jsonl
+capture.txt
+_capture_utf8.tmp
+sample-frames.txt
