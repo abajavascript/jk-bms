@@ -1,0 +1,19 @@
+js/protocol.js
+  s_769beccc655ff1::t_bc1ce545cef4ee 1-452
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d7b62b77a82b414b01847d01ae0bf72d38272e49",
+  "prompts": {},
+  "sessions": {
+    "s_769beccc655ff1": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "ad4b6ceb-f604-446f-9fa3-d0fc5ddeaa75",
+        "model": "auto-smart"
+      },
+      "human_author": "ABA JavaScript <abajavascript@gmail.com>"
+    }
+  }
+}
