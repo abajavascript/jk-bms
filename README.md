@@ -2,8 +2,6 @@
 
 This page connects to a JK-BMS over Bluetooth Low Energy and shows what the battery is doing: pack voltage, current, power, state of charge, remaining capacity, every cell voltage and wire resistance, temperatures, and the balancer and mosfet states. Readings can be plotted and stored in a local file chosen in the browser, tab-separated by default or JSON lines when the name ends in `.jsonl`. The page only reads data; it never changes a BMS setting.
 
-It is built like the [Atorch Energy Monitor page](https://github.com/abajavascript/atorch-s1wp) and works the same way.
-
 ## Open the page
 
 The hosted page is [https://abajavascript.github.io/jk-bms/](https://abajavascript.github.io/jk-bms/). What the app must do is in [doc/prd.md](doc/prd.md). Why it is built this way is in [doc/adr.md](doc/adr.md).
