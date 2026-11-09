@@ -1,0 +1,28 @@
+css/app.css
+  s_b1fb7d1a8877e3::t_4fc131c61a0090 151
+  s_b1fb7d1a8877e3::t_7a7d2d2aba2393 155-159
+  s_b1fb7d1a8877e3::t_43cf2ffbeef728 1-150,152-154,160-398
+index.html
+  s_b1fb7d1a8877e3::t_53c18001cfafc3 24-28
+  s_b1fb7d1a8877e3::t_c350da6fb1be2d 185-186
+  s_b1fb7d1a8877e3::t_aadc883246ba1a 21-23
+  s_b1fb7d1a8877e3::t_6bffb3c074ed61 29-31,182-184
+  s_b1fb7d1a8877e3::t_3549f0d9ecf010 187-189
+  s_b1fb7d1a8877e3::t_e14916fdb28f60 1-20,32-181,190-308
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "10f9595af1990f033247304aaa442edad7056741",
+  "prompts": {},
+  "sessions": {
+    "s_b1fb7d1a8877e3": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "5c2f7f62-4a8b-4eb9-8510-c3413c916f25",
+        "model": "auto-smart"
+      },
+      "human_author": "ABA JavaScript <abajavascript@gmail.com>"
+    }
+  }
+}
