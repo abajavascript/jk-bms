@@ -87,7 +87,7 @@ export function isCellInfoFrame(bytes) {
 }
 
 export const PROFILE = {
-  filters: [{ namePrefix: 'JK-' }, { namePrefix: 'JK_' }],
+  filters: [{ namePrefix: 'JK-' }, { namePrefix: 'JK_' }, { namePrefix: 'PowMr' }],
   service: 0xffe0,
   notify: 0xffe1,
   write: 0xffe1,
